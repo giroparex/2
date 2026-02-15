@@ -112,43 +112,26 @@
     </main>
 
     <script>
-        async function checkPassword() {
+        function checkPassword() {
     const inputField = document.getElementById('passwordInput');
-    const pass = inputField.value.trim(); // Limpia espacios
+    const pass = inputField.value.trim();
     const errorMsg = document.getElementById('errorMessage');
 
-    // HASH EXACTO para "clave" (64 caracteres)
-    const HASH_CORRECTO = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918";
+    
+    const PASS_ENCODED = "MTIzNHF3ZXI=";
 
-    try {
-        // 1. Convertimos la clave a formato binario
-        const msgBuffer = new TextEncoder().encode(pass);
+    // Convertimos lo que el usuario escribe a Base64 para comparar
+    const passToCompare = btoa(pass);
 
-        // 2. Calculamos el hash usando el estándar SHA-256
-        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-
-        // 3. Convertimos el resultado a una cadena de números y letras (Hexadecimal)
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-        // 4. COMPARACIÓN
-        if (hashHex === HASH_CORRECTO) {
-            sessionStorage.setItem('acceso_permitido', 'true');
-            window.location.href = "panelprincipal.html";
-        } else {
-            // Si el número no coincide
-            errorMsg.classList.remove('hidden');
-            inputField.classList.add('border-red-500', 'shake');
-            setTimeout(() => inputField.classList.remove('shake'), 400);
-            console.log("El hash no coincide"); 
-        }
-    } catch (e) {
-        console.error("Error crítico de cifrado:", e);
-        // Respaldo de emergencia si el navegador falla con el hash
-        if (pass === "1234qwer") {
-            sessionStorage.setItem('acceso_permitido', 'true');
-            window.location.href = "panelprincipal.html";
-        }
+    if (passToCompare === PASS_ENCODED) {
+        sessionStorage.setItem('acceso_permitido', 'true');
+        window.location.href = "panelprincipal.html";
+    } else {
+        errorMsg.classList.remove('hidden');
+        inputField.classList.add('border-red-500', 'shake');
+        setTimeout(() => {
+            inputField.classList.remove('shake');
+        }, 400);
     }
 }
     </script>
