@@ -114,7 +114,7 @@
     <script>
         async function checkPassword() {
     const inputField = document.getElementById('passwordInput');
-    const pass = inputField.value.trim(); // .trim() elimina espacios accidentales
+    const pass = inputField.value.trim(); // Elimina espacios accidentales
     const errorMsg = document.getElementById('errorMessage');
     
     // Hash para contraseña
@@ -129,15 +129,21 @@
 
         if (hashHex === HASH_CORRECTO) {
             sessionStorage.setItem('acceso_permitido', 'true');
-            window.location.href = "panelprincipal.html";
+            // Usamos un pequeño delay para asegurar que el storage se guarde
+            setTimeout(() => {
+                window.location.href = "panelprincipal.html";
+            }, 100);
         } else {
             errorMsg.classList.remove('hidden');
-            inputField.classList.add('border-red-500', 'shake');
-            setTimeout(() => inputField.classList.remove('shake'), 400);
+            inputField.classList.add('border-red-500');
+            console.log("Hash generado:", hashHex); // Esto te ayudará a ver qué pasa en la consola (F12)
         }
     } catch (e) {
-        console.error("Error en el cifrado:", e);
-        alert("Tu navegador no soporta esta función de seguridad.");
+        // Si falla el cifrado, intentamos una comparación simple como respaldo (opcional)
+        if (pass === "1234qwer") {
+             sessionStorage.setItem('acceso_permitido', 'true');
+             window.location.href = "panelprincipal.html";
+        }
     }
 }
     </script>
